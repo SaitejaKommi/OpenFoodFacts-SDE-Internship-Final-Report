@@ -76,32 +76,32 @@ The AskOFF architecture decouples data ingestion, search indexing, API orchestra
 
 ```mermaid
 flowchart TD
-    subgraph Data_Layer [Data Engineering Layer]
-        A[Open Food Facts Global Commons<br/>Hugging Face food split] --> B[DuckDB Streaming Filter<br/>countries_tags contains en:canada]
-        B --> C[Canadian Parquet Dataset<br/>124,145 rows | 25 columns]
+    subgraph Data_Layer ["Data Engineering Layer"]
+        A["Open Food Facts Global Commons<br/>Hugging Face food split"] --> B["DuckDB Streaming Filter<br/>countries_tags contains en:canada"]
+        B --> C["Canadian Parquet Dataset<br/>124,145 rows, 25 columns"]
     end
 
-    subgraph Ingestion_Layer [Ingestion & Normalization Layer]
-        C --> D[BaseAdapter / OFFAdapter]
-        D --> E[SearchDocumentBuilder SPD<br/>Dietary flag inference & text cleaning]
-        E --> F[Bulk Indexer batch size: 1000]
+    subgraph Ingestion_Layer ["Ingestion & Normalization Layer"]
+        C --> D["BaseAdapter / OFFAdapter"]
+        D --> E["SearchDocumentBuilder (SPD)<br/>Dietary flag inference & text cleaning"]
+        E --> F["Bulk Indexer (Batch Size: 1000)"]
     end
 
-    subgraph Search_Layer [Search Infrastructure Layer]
-        F --> G[(OpenSearch 2.12+ Versioned Index<br/>askoff_products_timestamp)]
-        G -->|Validation & Atomic Swap| H[(Search Alias<br/>askoff_products)]
+    subgraph Search_Layer ["Search Infrastructure Layer"]
+        F --> G[("OpenSearch 2.12+ Versioned Index<br/>askoff_products_timestamp")]
+        G -->|"Validation & Atomic Swap"| H[("Search Alias<br/>askoff_products")]
     end
 
-    subgraph API_Layer [Backend API Layer - offCanada/AskOFF-Search]
-        I[Client HTTP Request] --> J[FastAPI REST Gateway]
-        J --> K[SearchQueryPipeline<br/>Normalizer -> Synonyms -> Constraints -> Entities -> Intent]
-        K --> L[OpenSearchSearchRepository<br/>Tiered BM25 + Completeness Scoring]
+    subgraph API_Layer ["Backend API Layer - offCanada/AskOFF-Search"]
+        I["Client HTTP Request"] --> J["FastAPI REST Gateway"]
+        J --> K["SearchQueryPipeline<br/>Normalizer -> Synonyms -> Constraints -> Entities -> Intent"]
+        K --> L["OpenSearchSearchRepository<br/>Tiered BM25 + Completeness Scoring"]
         H -.-> L
-        L --> M[JSON Response + Explain Metadata]
+        L --> M["JSON Response + Explain Metadata"]
     end
 
-    subgraph Frontend_Layer [Frontend Presentation - offCanada/AskOFF-WebApp]
-        M --> N[AskOFF WebApp Client<br/>React 19 + TypeScript + TanStack Query]
+    subgraph Frontend_Layer ["Frontend Presentation - offCanada/AskOFF-WebApp"]
+        M --> N["AskOFF WebApp Client<br/>React 19 + TypeScript + TanStack Query"]
     end
 ```
 

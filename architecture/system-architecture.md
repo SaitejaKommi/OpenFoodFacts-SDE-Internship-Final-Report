@@ -18,7 +18,7 @@ flowchart TD
 
     subgraph Data_Engineering [Offline Ingestion & Normalization]
         Colab["OFF_Canada_Data_Code.ipynb (DuckDB)"]
-        Parquet["openfoodfacts_canada.parquet<br/>124,145 Rows | 25 Columns | ZSTD Compressed"]
+        Parquet["openfoodfacts_canada.parquet<br/>124,145 Rows, 25 Columns, ZSTD Compressed"]
         Adapter["BaseAdapter / OFFAdapter"]
         SPD_Builder["SearchDocumentBuilder (SPD)"]
         Bulk_Indexer["OpenSearch Bulk Indexer (Batch Size: 1000)"]
@@ -46,13 +46,13 @@ flowchart TD
     Adapter --> SPD_Builder
     SPD_Builder --> Bulk_Indexer
     Bulk_Indexer --> OS_Versioned
-    OS_Versioned -->|Validation & Swap| OS_Alias
+    OS_Versioned -->|"Validation & Swap"| OS_Alias
 
-    Browser_User <--> Vite_Client
-    Vite_Client <-->|HTTPS REST API / Vite Dev Proxy| API_Router
+    Browser_User --- Vite_Client
+    Vite_Client <-- "HTTPS REST API / Vite Dev Proxy" --> API_Router
     API_Router --> Query_Pipeline
     Query_Pipeline --> Search_Repo
-    Search_Repo <-->|DSL Queries & Filter Clauses| OS_Alias
+    Search_Repo <-- "DSL Queries & Filter Clauses" --> OS_Alias
 ```
 
 ---
@@ -233,10 +233,10 @@ flowchart LR
         OS_Node["OpenSearch 2.12+ Container<br/>(Port 9200, Volume: opensearch-data)"]
     end
 
-    Browser <-->|HTTPS (Port 443)| Proxy
-    Proxy -->|/api/*| Backend_API
-    Proxy -->|Static Chunks /*| Frontend_App
-    Backend_API <-->|Internal Docker Network (9200)| OS_Node
+    Browser <-- "HTTPS (Port 443)" --> Proxy
+    Proxy -->|"/api/*"| Backend_API
+    Proxy -->|"Static Chunks"| Frontend_App
+    Backend_API <-- "Internal Docker Network (9200)" --> OS_Node
 ```
 
 ### Security & Operational Hardening

@@ -24,11 +24,11 @@ When provisioned on production infrastructure, the intended deployment architect
 flowchart TD
     Client["Client Web Browser (HTTPS)"] --> Edge["Edge Reverse Proxy / CDN (Cloudflare / Nginx)<br/>- TLS Termination (Port 443)<br/>- Brotli/Gzip Compression<br/>- Static Asset Caching"]
     
-    Edge -->|Requests to /api/*| Backend_Container["FastAPI Backend Container<br/>- Python 3.11+ / Uvicorn ASGI<br/>- Non-root user: appuser (UID 10001)<br/>- Port: 8000"]
+    Edge -->|"/api/*"| Backend_Container["FastAPI Backend Container<br/>- Python 3.11+ / Uvicorn ASGI<br/>- Non-root user: appuser (UID 10001)<br/>- Port: 8000"]
     
-    Edge -->|Requests to /*| Frontend_Container["Frontend Static Container<br/>- Nginx serving pre-bundled Vite dist/<br/>- Port: 80"]
+    Edge -->|"Static Assets"| Frontend_Container["Frontend Static Container<br/>- Nginx serving pre-bundled Vite dist/<br/>- Port: 80"]
     
-    Backend_Container <-->|Encrypted Internal Network| OS_Cluster[("OpenSearch 2.12+ Cluster<br/>- Single or Multi-Node<br/>- Volume: opensearch-data<br/>- Port: 9200")]
+    Backend_Container <-- "Encrypted Internal Network" --> OS_Cluster[("OpenSearch 2.12+ Cluster<br/>- Single or Multi-Node<br/>- Volume: opensearch-data<br/>- Port: 9200")]
 ```
 
 ---

@@ -33,7 +33,7 @@ flowchart TD
 
     HF_Data --> DuckDB_Colab --> Canada_Parquet
     Canada_Parquet --> BE_Adapters
-    BE_API <-->|REST Contract / OpenAPI 3.1| FE_UI
+    BE_API <-- "REST Contract / OpenAPI 3.1" --> FE_UI
 ```
 
 ### Contributor Boundary Guidelines

@@ -28,7 +28,7 @@ The internship delivered a complete, decoupled, and empirically verified search 
 1. **Canadian Food Dataset (124,145 Products)**: Extracted and engineered a high-density, Canada-focused dataset from Open Food Facts in Apache Parquet format using DuckDB, preserving 113,135 leading-zero barcode strings and synthesizing 28,608 direct CDN image URLs. Published on Hugging Face and Kaggle.
 2. **Deterministic Query Understanding Pipeline**: Built a 5-stage NLP query processing engine in Python 3.11/FastAPI that decouples recipe quantities, corrects typos, canonicalizes Canadian bilingual synonyms (EN/FR), extracts numeric nutritional boundaries, and identifies brand entities without runtime LLM overhead.
 3. **OpenSearch Retrieval Engine & SPD**: Designed a canonical Semantic Product Document (SPD) schema and implemented a tiered BM25 lexical retrieval engine with metadata completeness function scoring, supporting sub-50ms query execution and blue/green zero-downtime index swaps.
-4. **Comprehensive Search Evaluation**: Benchmarked the search engine against the previous Search-a-licious backend across a 35-query structured benchmark (achieving **62.86% Mean P@5**, **86.59% Mean NDCG@10**, and **0.726 Mean MRR**, with **100% P@5 on recipe and numeric queries**) and a 69-query live black-box audit (**99.41% relevance rate**).
+4. **Comprehensive Search Evaluation**: Benchmarked the search engine against the previous [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) backend across a 35-query structured benchmark (achieving **62.86% Mean P@5**, **86.59% Mean NDCG@10**, and **0.726 Mean MRR**, with **100% P@5 on recipe and numeric queries**) and a 69-query live black-box audit (**99.41% relevance rate**).
 5. **AskOFF WebApp**: Designed and built an accessible, responsive web application using React 19, TypeScript, Vite, and TailwindCSS across 10 lazy-loaded page routes, featuring side-by-side nutrition comparison, vector Nutri-Score/NOVA gauges, and an evidence-grounded food assistant (OffBot).
 6. **Engineering Quality & Open-Source Delivery**: Authored 172 automated tests (148 backend pytest, 24 frontend Vitest) with 100% pass rates, achieved 0 lint errors (Ruff/Oxlint), enforced strict TypeScript type safety, and decoupled the codebase into clean contributor repositories under `offCanada`.
 
@@ -44,7 +44,7 @@ The project was guided by eight core software engineering objectives:
 4. **Structured Product Representation**: Establish a canonical Semantic Product Document (SPD) unifying multilingual text, verified nutrients, and precomputed health flags.
 5. **High-Relevance Ranking**: Implement tiered BM25 lexical matching that balances exact phrase hits with record completeness.
 6. **Accessible Frontend Web Application**: Deliver a responsive, fast user interface supporting search, product inspection, side-by-side comparison, and recipes.
-7. **Empirical Search Evaluation**: Formulate rigorous IR benchmarks comparing the new retrieval engine against Open Food Facts' existing Search-a-licious baseline.
+7. **Empirical Search Evaluation**: Formulate rigorous IR benchmarks comparing the new retrieval engine against Open Food Facts' existing [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) baseline.
 8. **Contributor Extensibility**: Decouple frontend and backend repositories with clear adapter boundaries so future open-source contributors can easily add new countries, retailers, and dietary filters.
 
 ---
@@ -235,16 +235,16 @@ Query: "Compliments 250 g tomato sauce under 5g sugar"
 
 ## 10. Search Evaluation & Benchmarks
 
-Search quality was rigorously evaluated against the previous Search-a-licious backend across empirical benchmarks.
+Search quality was rigorously evaluated against the previous [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) backend across empirical benchmarks.
 
 > [!IMPORTANT]
 > **Evaluation Rigor Note**: The ground truth for the 35-query benchmark is **programmatic and rule-based** (evaluated via `backend/evaluation/grading.py`), designed for reproducible automated regression testing. It is **not equivalent to human editorial relevance judgments**.
 
-### 1. Dimensional Comparison: Search-a-licious vs. AskOFF Search
+### 1. Dimensional Comparison: [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) vs. AskOFF Search
 
-| Dimension | Search-a-licious (Baseline) | AskOFF Search (Internship Deliverable) | Comparative Assessment | Evidence / Source |
+| Dimension | [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) (Baseline) | AskOFF Search (Internship Deliverable) | Comparative Assessment | Evidence / Source |
 |---|---|---|---|---|
-| **Query Paradigm** | Formal Lucene syntax (`luqum`). Conversational queries fail. | Deterministic conversational NLP parsing. | AskOFF improves conversational query understanding | `backend/query/` vs. Search-a-licious docs |
+| **Query Paradigm** | Formal Lucene syntax (`luqum`). Conversational queries fail. | Deterministic conversational NLP parsing. | AskOFF improves conversational query understanding | `backend/query/` vs. [Search-a-licious docs](https://github.com/openfoodfacts/search-a-licious) |
 | **Recipe Quantities** | Treats `"250 g"` as search tokens, penalizing results. | Decouples quantities from keyword matching. | AskOFF decouples recipe quantities | P@5: 1.00 on recipe queries |
 | **Nutrient Limits** | Requires manual Lucene syntax `nutrients.sugar_100g:[* TO 10]`. | Parses `"under 10g sugar"` into hard numeric filters. | AskOFF automates constraint extraction | `backend/tests/test_nutrition.py` |
 | **Zero Sugar Rule** | Unstandardized keyword matching. | Enforces Health Canada standard ($\le 0.5\text{g} / 100\text{g}$). | AskOFF enforces regulatory threshold | Live search returns 344 items at $0.0\text{g}$ sugar |
@@ -253,7 +253,7 @@ Search quality was rigorously evaluated against the previous Search-a-licious ba
 | **Search Latency** | Variable on large collections. | Sub-50ms on live OpenSearch cluster. | Comparable baseline query latency | Empirical API took_ms measurements |
 | **Index Lifecycle** | Manual rebuilds. | Zero-downtime blue/green atomic alias swap. | AskOFF standardizes alias lifecycle | `backend/search/indexer.py` |
 
-*Nuance & Trade-offs*: Search-a-licious retains advantages for power users requiring arbitrary nested boolean queries via `luqum`. For standard single-token queries (e.g. `"milk"`), both systems demonstrate comparable baseline BM25 retrieval. AskOFF specifically targets natural consumer grocery queries.
+*Nuance & Trade-offs*: [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) retains advantages for power users requiring arbitrary nested boolean queries via `luqum`. For standard single-token queries (e.g. `"milk"`), both systems demonstrate comparable baseline BM25 retrieval. AskOFF specifically targets natural consumer grocery queries.
 
 
 ### 2. Verified Benchmark Metrics (35 Queries on 124k Catalog)
@@ -397,6 +397,7 @@ All official deliverables are hosted at the verified URLs below:
 | Initial P3 prototype | https://github.com/offCanada/OFF-Canada-P3-Prototype |
 | Backend / Search | https://github.com/offCanada/AskOFF-Search |
 | Frontend / Web App | https://github.com/offCanada/AskOFF-WebApp |
+| Reference Search Backend | https://github.com/openfoodfacts/search-a-licious |
 | Kaggle dataset | https://www.kaggle.com/datasets/saitejakommi/open-food-facts-canada-dataset |
 | Hugging Face dataset | https://huggingface.co/datasets/offCanada/openfoodfacts-canada |
 | Dataset generation notebook | https://huggingface.co/datasets/offCanada/openfoodfacts-canada/blob/main/OFF_Canada_Data_Code.ipynb |

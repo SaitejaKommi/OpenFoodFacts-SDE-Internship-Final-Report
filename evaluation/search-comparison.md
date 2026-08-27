@@ -1,6 +1,6 @@
 # Search Engine Comparative Evaluation — Search-a-licious vs. AskOFF Search
 
-This document provides a technical, evidence-backed evaluation comparing the previous Open Food Facts search backend (**Search-a-licious**) with the internship deliverable (**AskOFF Search**).
+This document provides a technical, evidence-backed evaluation comparing the previous Open Food Facts search backend ([Search-a-licious](https://github.com/openfoodfacts/search-a-licious)) with the internship deliverable (**AskOFF Search**).
 
 ---
 
@@ -8,9 +8,9 @@ This document provides a technical, evidence-backed evaluation comparing the pre
 
 The table below contrasts the architectural capabilities, query mechanics, and operational performance of both engines based on source inspection and empirical testing.
 
-| Dimension | Search-a-licious (Baseline) | AskOFF Search (Internship Deliverable) | Comparative Assessment | Evidence / Source |
+| Dimension | [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) (Baseline) | AskOFF Search (Internship Deliverable) | Comparative Assessment | Evidence / Source |
 |---|---|---|---|---|
-| **Query Paradigm** | **Formal Lucene Syntax (`luqum`)**: Requires structured syntax (e.g. `nutrients.sugar_100g:[* TO 20] AND labels:organic`). Natural conversational queries fail or degrade. | **Deterministic NLP & Conversational Understanding**: Automatically isolates quantities, entities, and numeric inequalities from natural text. | **AskOFF improves conversational grocery queries** | [`backend/query/`](https://github.com/offCanada/AskOFF-Search) vs. `search-a-licious/docs/users/explain-query-language.md` |
+| **Query Paradigm** | **Formal Lucene Syntax (`luqum`)**: Requires structured syntax (e.g. `nutrients.sugar_100g:[* TO 20] AND labels:organic`). Natural conversational queries fail or degrade. | **Deterministic NLP & Conversational Understanding**: Automatically isolates quantities, entities, and numeric inequalities from natural text. | **AskOFF improves conversational grocery queries** | [`backend/query/`](https://github.com/offCanada/AskOFF-Search) vs. [Search-a-licious Repository](https://github.com/openfoodfacts/search-a-licious) |
 | **Recipe Quantity Handling** | **Token Pollution**: Queries like `"250 g tomato sauce"` treat `"250"` and `"g"` as search tokens, penalizing relevant sauces lacking explicit measurement strings. | **Measurement Isolation**: Regular expression tokenizer decouples volume/weight units, searching core product terms while recording quantities. | **AskOFF decouples recipe quantities** | `backend/query/constraint_extractor.py` (P@5: 1.00 on recipe queries) |
 | **Nutritional Constraints** | **Manual Query Construction**: Callers must know exact backend field paths and Lucene range syntax. | **Automated Parsing**: Parses phrases like `"under 10g sugar"` directly into hard numeric range filters on `attributes.nutrition.sugars.per_100g`. | **AskOFF automates constraint extraction** | `backend/tests/test_nutrition.py` |
 | **Canadian Zero-Sugar Standard** | **Unstandardized**: General keyword matching for "zero sugar" matches product names containing the phrase regardless of actual content. | **Regulatory Enforcement**: Implements Health Canada standard ($\le 0.5\text{g} \text{ sugar} / 100\text{g}$) as a strict numeric threshold. | **AskOFF enforces regulatory threshold** | Verified on live index: `"zero sugar chocolate"` returns 344 items, all $\le 0.5\text{g}$ sugar. |
@@ -23,7 +23,7 @@ The table below contrasts the architectural capabilities, query mechanics, and o
 
 ### Comparative Nuance & Limitations
 While AskOFF delivers marked improvements for conversational and recipe-driven queries, an objective engineering assessment reveals where Search-a-licious remains capable or where both engines share trade-offs:
-1. **Ad-Hoc Boolean Queries**: Search-a-licious allows power users and data scientists to compose arbitrary, deeply nested Lucene expressions directly via `luqum` (e.g. `(nutrients.fat_100g:[10 TO 20] OR labels:organic)`). AskOFF specifically targets consumer natural language rather than arbitrary boolean code.
+1. **Ad-Hoc Boolean Queries**: [Search-a-licious](https://github.com/openfoodfacts/search-a-licious) allows power users and data scientists to compose arbitrary, deeply nested Lucene expressions directly via `luqum` (e.g. `(nutrients.fat_100g:[10 TO 20] OR labels:organic)`). AskOFF specifically targets consumer natural language rather than arbitrary boolean code.
 2. **Standard Keyword Lookups**: On simple single-term queries (e.g. `"cheddar"`, `"milk"`), both engines use standard BM25 inverted index lookups and exhibit comparable baseline retrieval behavior.
 3. **Broad Category Queries**: For broad, unconstrained queries (e.g. `"snacks"` or `"beverages"`), both engines face catalog noise challenges inherent in crowd-sourced product data.
 
